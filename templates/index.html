@@ -47,7 +47,7 @@
 		
     </style>
 	
-	<script src="d3.js"></script> <!-- Add this line to your file -->
+	<script src="{{ url_for('static', filename = 'd3.js') }}"></script> <!-- Add this line to your file -->
 	
 </head>
 
@@ -71,9 +71,11 @@
 	let store = {}
 	
 	function loadData() {
-		let promise =//TODO 1: Add the code to load the CSV file named "routes.csv" | 1 Line
+	    // TODO 1: Add the code to load the CSV file named "routes.csv" | 1 Line
+		let promise = d3.csv("routes.csv");
 		return promise.then(routes => {
-			store.routes = //TODO 2: Save the routes into our store variable;
+		    // TODO 2: Save the routes into our store variable
+			store.routes = push(routes);
 			return store;
 		})
 	}

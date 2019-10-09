@@ -108,12 +108,18 @@
         return result
     }
 
+    function drawAirlinesChart(airlines) {
+        // TODO - fill this out!
+    }
+
     function showData() {
         // Get the routes from our store variable
         let routes = store.routes
         // Compute the number of routes per airline.
         let airlines = groupByAirline(store.routes);
         console.log(airlines)
+        // Draw airlines bar chart
+        drawAirlinesChart(airlines)
     }
 
     loadData().then(showData);

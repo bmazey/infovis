@@ -224,6 +224,24 @@
         drawAxesAirlinesChart(airlines, scales, config);
     }
 
+    function drawBaseMap(container, countries, projection){
+        // TODO: create a geoPath generator and set its projection to be the projection passed as parameter.
+        let path = d3.geoPath().projection(projection);
+
+        // TODO: use the path generator to draw each country
+        container.selectAll("path").data(countries)
+            .enter().append("path")
+            .attr("d", d => path(d))
+            .attr("stroke", "#ccc")
+            .attr("fill", "#eee")
+    }
+
+    function drawMap(geoJson) {
+        let config = getMapConfig();
+        let projection = getMapProjection(config)
+        drawBaseMap(config.container, geoJson.features, projection)
+    }
+
     function showData() {
         // Get the routes from our store variable
         let routes = store.routes
@@ -232,6 +250,8 @@
         console.log(airlines)
         // Draw airlines bar chart
         drawAirlinesChart(airlines)
+        // Using the data saved on loadData
+        drawMap(store.geoJSON)
     }
 
     loadData().then(showData);

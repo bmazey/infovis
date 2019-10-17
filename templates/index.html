@@ -145,6 +145,17 @@
         return {width, height, container}
     }
 
+    function getMapProjection(config) {
+        let {width, height} = config;
+        // TODO: Create a projection of type Mercator.
+        let projection = d3.geoMercator();
+        projection.scale(97)
+            .translate([width / 2, height / 2 + 20])
+
+        store.mapProjection = projection;
+        return projection;
+    }
+
     function getAirlinesChartScales(airlines, config) {
         let { bodyWidth, bodyHeight } = config;
         let maximunCount = d3.max( airlines, (airlines) => airlines.Count);

@@ -11,9 +11,14 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/aid')
-def aid():
-    return render_template('aid.html')
+@app.route('/bars')
+def bars():
+    return render_template('aid-bars.html')
+
+
+@app.route('/map')
+def diverging_map():
+    return render_template('aid-diverging-map.html')
 
 
 if __name__ == '__main__':

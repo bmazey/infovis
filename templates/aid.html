@@ -125,12 +125,9 @@
         // TODO: create a geoPath generator and set its projection to be the projection passed as parameter.
         let path = d3.geoPath().projection(projection);
 
-        const colorScale = d3.scaleThreshold()
-            .domain([100000, 1000000, 10000000, 30000000, 100000000, 500000000])
-            .range(d3.schemeBlues[7]);
-
-        const colorSequential = d3.scaleSequential(d3.interpolatePuOr)
-            .domain([-1, 1]);
+        const colorScale = d3.scaleDiverging(d3.interpolateSpectral)
+            .domain([-10000000000, 0, 10000000000])
+            .interpolator(d3.interpolateRdBu)
 
         // TODO: use the path generator to draw each country
         container.selectAll("path").data(countries)
@@ -139,7 +136,7 @@
             .attr("stroke", "#ccc")
             .attr("fill", (d) => {
                 d.total = countryTotal[d.properties.name] || 0;
-                return colorSequential(d.total);
+                return colorScale(d.total);
             })
     }
 

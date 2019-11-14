@@ -11,5 +11,10 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/aid')
+def aid():
+    return render_template('aid.html')
+
+
 if __name__ == '__main__':
     app.run()

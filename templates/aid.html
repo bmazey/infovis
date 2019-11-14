@@ -60,8 +60,9 @@
     </div>
 </body>
 <script>
-    // global variable
+    // global variables
     let store = {}
+    let countryTotal = {}
 
 	function loadData() {
 	    // TODO 1: Add the code to load the CSV file named "routes.csv" | 1 Line
@@ -76,27 +77,25 @@
 	}
 
 	function getCountryAid(data) {
-        countries = {}
         data.forEach((row) => {
             const amount = parseInt(row.commitment_amount_usd_constant)
             const donor = row.donor
             const recipient = row.recipient
 
-            if(!countries[donor]) {
-                countries[donor] = amount
+            if(!countryTotal[donor]) {
+                countryTotal[donor] = amount
             }
             else {
-                countries[donor] += amount
+                countryTotal[donor] += amount
             }
 
-            if(!countries[recipient]) {
-                countries[recipient] = 0 - amount
+            if(!countryTotal[recipient]) {
+                countryTotal[recipient] = 0 - amount
             }
             else {
-                countries[recipient] -= amount
+                countryTotal[recipient] -= amount
             }
         })
-        return countries
     }
 
     function getMapConfig(){
@@ -122,16 +121,26 @@
         return projection;
     }
 
-    function drawBaseMap(container, countries, projection){
+    function drawBaseMap(container, countries, projection) {
         // TODO: create a geoPath generator and set its projection to be the projection passed as parameter.
         let path = d3.geoPath().projection(projection);
+
+        const colorScale = d3.scaleThreshold()
+            .domain([100000, 1000000, 10000000, 30000000, 100000000, 500000000])
+            .range(d3.schemeBlues[7]);
+
+        const colorSequential = d3.scaleSequential(d3.interpolatePuOr)
+            .domain([-1, 1]);
 
         // TODO: use the path generator to draw each country
         container.selectAll("path").data(countries)
             .enter().append("path")
             .attr("d", d => path(d))
             .attr("stroke", "#ccc")
-            .attr("fill", "#eee")
+            .attr("fill", (d) => {
+                d.total = countryTotal[d.properties.name] || 0;
+                return colorSequential(d.total);
+            })
     }
 
     function drawMap(geoJson) {

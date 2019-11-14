@@ -49,6 +49,7 @@
     </style>
 
 	 <script src="{{ url_for('static', filename = 'd3.js') }}"></script> <!-- Add this line to your file -->
+     <script src="{{ url_for('static', filename = 'd3.legend.js') }}"></script>
 </head>
 <body>
     <h1>Foreign Aid</h1>
@@ -56,6 +57,10 @@
         <div>
             <h2>Map</h2>
             <svg id="Map"></svg>
+        </div>
+        <div>
+            <h2>Legend</h2>
+            <svg id="Legend"></svg>
         </div>
     </div>
 </body>
@@ -138,6 +143,20 @@
                 d.total = countryTotal[d.properties.name] || 0;
                 return colorScale(d.total);
             })
+
+        // now the legend
+        var svg = d3.select("#Legend");
+        var colorLegend = d3.legend.color()
+            .labelFormat(d3.format(".0f"))
+            .scale(colorScale)
+            .shapePadding(5)
+            .shapeWidth(50)
+            .shapeHeight(20)
+            .labelOffset(12);
+
+        svg.append("g")
+            .attr("transform", "translate(352, 60)")
+            .call(colorLegend);
     }
 
     function drawMap(geoJson) {

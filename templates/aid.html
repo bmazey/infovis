@@ -48,8 +48,8 @@
 
     </style>
 
-	 <script src="{{ url_for('static', filename = 'd3.js') }}"></script> <!-- Add this line to your file -->
-     <script src="{{ url_for('static', filename = 'd3.legend.js') }}"></script>
+    <script src="{{ url_for('static', filename = 'd3.js') }}"></script> <!-- Add this line to your file -->
+    <!-- TODO - add legend? -->
 </head>
 <body>
     <h1>Foreign Aid</h1>
@@ -146,17 +146,8 @@
 
         // now the legend
         var svg = d3.select("#Legend");
-        var colorLegend = d3.legend.color()
-            .labelFormat(d3.format(".0f"))
-            .scale(colorScale)
-            .shapePadding(5)
-            .shapeWidth(50)
-            .shapeHeight(20)
-            .labelOffset(12);
+        // TODO - add legend?
 
-        svg.append("g")
-            .attr("transform", "translate(352, 60)")
-            .call(colorLegend);
     }
 
     function drawMap(geoJson) {

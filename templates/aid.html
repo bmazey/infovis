@@ -75,6 +75,30 @@
         })
 	}
 
+	function getCountryAid(data) {
+        countries = {}
+        data.forEach((row) => {
+            const amount = parseInt(row.commitment_amount_usd_constant)
+            const donor = row.donor
+            const recipient = row.recipient
+
+            if(!countries[donor]) {
+                countries[donor] = amount
+            }
+            else {
+                countries[donor] += amount
+            }
+
+            if(!countries[recipient]) {
+                countries[recipient] = 0 - amount
+            }
+            else {
+                countries[recipient] -= amount
+            }
+        })
+        return countries
+    }
+
     function getMapConfig(){
         let width = 600;
         let height = 400;
@@ -119,6 +143,7 @@
     function showData() {
         // Get the aid from our store variable
         let aid = store.aid
+        let countries = getCountryAid(aid)
         drawMap(store.geoJSON)
     }
 

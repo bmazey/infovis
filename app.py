@@ -21,5 +21,10 @@ def diverging_map():
     return render_template('aid-diverging-map.html')
 
 
+@app.route('/categories')
+def categories():
+    return render_template('aid-type-bars.html')
+
+
 if __name__ == '__main__':
     app.run()

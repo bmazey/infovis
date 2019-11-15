@@ -1,184 +1,103 @@
 <!DOCTYPE html>
-<head>
-  <meta charset="utf-8">
-  <script src="{{ url_for('static', filename = 'd3.js') }}"></script>
-  <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-  <style>
-    body { margin:0; position:fixed; top:0; right:0; bottom:0; left:0; }
+<style>
+.axis .domain {
+  display: none;
+}
+</style>
+<svg width="5000" height="1000"></svg>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
 
-    body {
-      font-family: monospace;
-    }
+    /*
+	Brandon Mazey
+	bjm319@nyu.edu
+	N15793294
+	D3 Lab - Project 1
+	11/15/2019
+	https://github.com/bmazey/infovis
+	*/
 
-    .y-axis line{
-      stroke: black;
-    }
+    var svg = d3.select("svg"),
+        margin = {top: 20, right: 20, bottom: 30, left: 40},
+        width = 4000 - margin.left - margin.right,
+        height = +svg.attr("height") - margin.top - margin.bottom,
+        g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    .annual-growth {
-      fill: black;
-    }
+    var x0 = d3.scaleBand()
+        .rangeRound([0, width])
+        .paddingInner(0.1);
 
-    .bar-label, .x-axis {
-      font-size: 8px;
-    }
+    var x1 = d3.scaleBand()
+        .padding(0.05);
 
-    .domain, .tick line {
-      opacity: 0.5;
-    }
+    var y = d3.scaleLinear()
+        .rangeRound([height, 0]);
 
-  </style>
-</head>
+    var z = d3.scaleOrdinal()
+        .range(["#e6550d", "#756bb1"]);
 
-<body>
-  <script>
-    let store = {}
-    let countryTotal = {}
+    d3.csv("{{ url_for('static', filename = 'aid-recipient-donor.csv') }}", function(d, i, columns) {
+        for (var i = 1, n = columns.length; i < n; ++i) {
+            d[columns[i]] = +d[columns[i]];
+        }
+        return d;
+    }, function(error, data) {
+        if (error) throw error;
+        var keys = data.columns.slice(1);
+        x0.domain(data.map(function(d) { return d.country; }));
+        x1.domain(keys).rangeRound([0, x0.bandwidth()]);
+        y.domain([0, d3.max(data, function(d) { return d3.max(keys, function(key) { return d[key]; }); })]).nice();
 
-	var margin = {top: 40, right: 50, bottom: 60, left: 50};
+        g.append("g")
+          .selectAll("g")
+          .data(data)
+          .enter().append("g")
+          .attr("transform", function(d) { return "translate(" + x0(d.country) + ",0)"; })
+          .selectAll("rect")
+          .data(function(d) { return keys.map(function(key) { return {key: key, value: d[key]}; }); })
+          .enter().append("rect")
+          .attr("x", function(d) { return x1(d.key); })
+          .attr("y", function(d) { return y(d.value); })
+          .attr("width", x1.bandwidth())
+          .attr("height", function(d) { return height - y(d.value); })
+          .attr("fill", function(d) { return z(d.key); });
 
-    var width = 960 - margin.left - margin.right,
-    		height = 500 - margin.top - margin.bottom;
+        g.append("g")
+          .attr("class", "axis")
+          .attr("transform", "translate(0," + height + ")")
+          .call(d3.axisBottom(x0));
 
-    var svg = d3.select("body").append("svg")
-          .attr("width", width + margin.left + margin.right)
-          .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        g.append("g")
+          .attr("class", "axis")
+          .call(d3.axisLeft(y).ticks(null, "s"))
+          .append("text")
+          .attr("x", 2)
+          .attr("y", y(y.ticks().pop()) + 0.5)
+          .attr("dy", "0.64em")
+          .attr("fill", "#000")
+          .attr("font-weight", "bold")
+          .attr("text-anchor", "start")
+          .text("Amount");
 
-    // Config
-    var cfg = {
-      labelMargin: 5,
-      xAxisMargin: 10,
-      legendRightMargin: 0
-    }
+        var legend = g.append("g")
+          .attr("font-family", "sans-serif")
+          .attr("font-size", 10)
+          .attr("text-anchor", "end")
+          .selectAll("g")
+          .data(keys.slice().reverse())
+          .enter().append("g")
+          .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
 
-    var x = d3.scaleLinear()
-    	.range([0, width]);
+        legend.append("rect")
+          .attr("x", width - 19)
+          .attr("width", 19)
+          .attr("height", 19)
+          .attr("fill", z);
 
-    var colour = d3.scaleSequential(d3.interpolatePRGn);
-
-    var y = d3.scaleBand()
-    	.range([height, 0])
-    	.padding(0.1);
-
-    var legend = svg.append("g")
-    	.attr("class", "legend");
-
-    legend.append("text")
-    	.attr("x", width - cfg.legendRightMargin)
-    	.attr("text-anchor", "end")
-    	.text("European Countries by");
-
-    legend.append("text")
-      .attr("x", width - cfg.legendRightMargin)
-    	.attr("y", 20)
-    	.attr("text-anchor", "end")
-    	.style("opacity", 0.5)
-    	.text("2016 Population Growth Rate (%)");
-
-    function drawChart() {
-        y.domain(10000000000000);
-        x.domain(10000000000000);
-
-        var max = 100000000000000;
-        colour.domain([-max, max]);
-
-        var yAxis = svg.append("g")
-      	    .attr("class", "y-axis")
-      	    .attr("transform", "translate(" + x(0) + ",0)")
-      	    .append("line")
-            .attr("y1", 0)
-            .attr("y2", height);
-
-        var xAxis = svg.append("g")
-      	    .attr("class", "x-axis")
-      	    .attr("transform", "translate(0," + (height + cfg.xAxisMargin) + ")")
-      	    .call(d3.axisBottom(x).tickSizeOuter(0));
-
-        var bars = svg.append("g")
-      	    .attr("class", "bars")
-
-      for (let country in countryTotal) {
-        console.log(country)
-        bars.selectAll("rect")
-      	    .data(countryTotal[country])
-            .enter().append("rect")
-      	    .attr("class", "annual-growth")
-      	    .attr("x", function(d) {
-       	  return x(Math.min(0, countryTotal[country]));
-      	})
-      	.attr("y", function(d) { return y(country); })
-      	.attr("height", y.bandwidth())
-      	.attr("width", function(d) {
-        	return Math.abs(x(countryTotal[country]) - x(0))
-      	})
-      	.style("fill", function(d) {
-        	return colour(countryTotal[country])
-      	});
-
-      var labels = svg.append("g")
-      	.attr("class", "labels");
-
-      labels.selectAll("text")
-      	.data(countryTotal[country])
-        .enter().append("text")
-      	.attr("class", "bar-label")
-      	.attr("x", x(0))
-      	.attr("y", function(d) { return y(country)})
-      	.attr("dx", function(d) {
-        	return countryTotal[country] < 0 ? cfg.labelMargin : -cfg.labelMargin;
-      	})
-      	.attr("dy", y.bandwidth())
-      	.attr("text-anchor", function(d) {
-        	return countryTotal[country] < 0 ? "start" : "end";
-      	})
-      	.text(function(d) { return country })
-      	.style("fill", function(d) {
-        	 if (country == "European Union") {
-             return "blue";
-           }
-      	});
-      }
-    }
-
-    function getCountryAid(data) {
-        data.forEach((row) => {
-            const amount = parseInt(row.commitment_amount_usd_constant)
-            const donor = row.donor
-            const recipient = row.recipient
-
-            if(!countryTotal[donor]) {
-                countryTotal[donor] = amount
-            }
-            else {
-                countryTotal[donor] += amount
-            }
-
-            if(!countryTotal[recipient]) {
-                countryTotal[recipient] = 0 - amount
-            }
-            else {
-                countryTotal[recipient] -= amount
-            }
-        })
-    }
-
-    function loadData() {
-        // TODO 1: Add the code to load the CSV file named "routes.csv" | 1 Line
-		return Promise.all([
-            d3.csv("{{ url_for('static', filename = 'aiddata-countries-only-aiddata-countries-only.csv') }}")
-        ]).then(datasets => {
-            store.aid = datasets[0];
-            return store;
-        })
-    }
-
-    function showData() {
-        let countries = getCountryAid(store.aid)
-        drawChart()
-    }
-
-    loadData().then(showData)
-
-  </script>
-</body>
+        legend.append("text")
+          .attr("x", width - 24)
+          .attr("y", 9.5)
+          .attr("dy", "0.32em")
+          .text(function(d) { return d; });
+    });
+</script>

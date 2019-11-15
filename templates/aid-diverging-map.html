@@ -46,21 +46,57 @@
 			display: flex;
 		}
 
+		ul {
+            margin: 20px;
+        }
+
+        li {
+            list-style-type:none
+        }
+
+        .input-color {
+            position: relative;
+        }
+
+        .input-color input {
+            padding-left: 20px;
+        }
+
+        .input-color .color-box {
+            width: 10px;
+            height: 10px;
+            display: inline-block;
+            background-color: #ccc;
+            position: absolute;
+            left: 5px;
+            top: 5px;
+        }
+
     </style>
 
     <script src="{{ url_for('static', filename = 'd3.js') }}"></script> <!-- Add this line to your file -->
     <!-- TODO - add legend? -->
 </head>
 <body>
-    <h1>Foreign Aid</h1>
     <div class="mainView">
         <div>
-            <h2>Map</h2>
             <svg id="Map"></svg>
         </div>
         <div>
-            <h2>Legend</h2>
-            <svg id="Legend"></svg>
+            <ul>
+                <li>
+                    <div class="input-color">
+                        <input type="text" value="Donor" />
+                        <div class="color-box" style="background-color: #08519c;"></div>
+                    </div>
+                </li>
+                <li>
+                    <div class="input-color">
+                        <input type="text" value="Recipient" />
+                        <div class="color-box" style="background-color: #a50f15;"></div>
+                    </div>
+                </li>
+            </ul>
         </div>
     </div>
 </body>
@@ -144,10 +180,7 @@
                 return colorScale(d.total);
             })
 
-        // now the legend
-        var svg = d3.select("#Legend");
-        // TODO - add legend?
-
+        // legend?
     }
 
     function drawMap(geoJson) {

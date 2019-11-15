@@ -1,10 +1,170 @@
 <!DOCTYPE html>
-<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+  <meta charset="utf-8">
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+  <style>
+    body { margin:0; position:fixed; top:0; right:0; bottom:0; left:0; }
 
+    body {
+      font-family: monospace;
+    }
+
+    .y-axis line{
+      stroke: black;
+    }
+
+    .annual-growth {
+      fill: black;
+    }
+
+    .bar-label, .x-axis {
+      font-size: 8px;
+    }
+
+    .domain, .tick line {
+      opacity: 0.5;
+    }
+
+  </style>
+</head>
+
+<body>
+  <script>
+    let countryTotal = {}
+
+	var margin = {top: 40, right: 50, bottom: 60, left: 50};
+
+    var width = 960 - margin.left - margin.right,
+    		height = 500 - margin.top - margin.bottom;
+
+    var svg = d3.select("body").append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    // Config
+    var cfg = {
+      labelMargin: 5,
+      xAxisMargin: 10,
+      legendRightMargin: 0
+    }
+
+    var x = d3.scaleLinear()
+    	.range([0, width]);
+
+    var colour = d3.scaleSequential(d3.interpolatePRGn);
+
+    var y = d3.scaleBand()
+    	.range([height, 0])
+    	.padding(0.1);
+
+    var legend = svg.append("g")
+    	.attr("class", "legend");
+
+    legend.append("text")
+    	.attr("x", width - cfg.legendRightMargin)
+    	.attr("text-anchor", "end")
+    	.text("European Countries by");
+
+    legend.append("text")
+      .attr("x", width - cfg.legendRightMargin)
+    	.attr("y", 20)
+    	.attr("text-anchor", "end")
+    	.style("opacity", 0.5)
+    	.text("2016 Population Growth Rate (%)");
+
+    d3.csv("{{ url_for('static', filename = 'aiddata-countries-only-aiddata-countries-only.csv') }}", function(error, data) {
+      if (error) throw error;
+      data.forEach((row) => {
+            const amount = parseInt(row.commitment_amount_usd_constant)
+            const donor = row.donor
+            const recipient = row.recipient
+
+            if(!countryTotal[donor]) {
+                countryTotal[donor] = amount
+            }
+            else {
+                countryTotal[donor] += amount
+            }
+
+            if(!countryTotal[recipient]) {
+                countryTotal[recipient] = 0 - amount
+            }
+            else {
+                countryTotal[recipient] -= amount
+            }
+        })
+
+    });
+
+    if(Object.entries(countryTotal).length === 0 && countryTotal.constructor === Object) {
+        console.log("uh-oh!");
+    }
+
+    for (let country in countryTotal) {
+      console.log(country)
+      y.domain(data.map(function(d) { return country; }));
+      x.domain(d3.extent(data, function(d) { return countryTotal[country]; }));
+
+      var max = d3.max(data, function(d) { return countryTotal[country]; });
+      colour.domain([-max, max]);
+
+      var yAxis = svg.append("g")
+      	.attr("class", "y-axis")
+      	.attr("transform", "translate(" + x(0) + ",0)")
+      	.append("line")
+          .attr("y1", 0)
+          .attr("y2", height);
+
+      var xAxis = svg.append("g")
+      	.attr("class", "x-axis")
+      	.attr("transform", "translate(0," + (height + cfg.xAxisMargin) + ")")
+      	.call(d3.axisBottom(x).tickSizeOuter(0));
+
+      var bars = svg.append("g")
+      	.attr("class", "bars")
+
+      bars.selectAll("rect")
+      	.data(data)
+        .enter().append("rect")
+      	.attr("class", "annual-growth")
+      	.attr("x", function(d) {
+       		return x(Math.min(0, countryTotal[country]));
+      	})
+      	.attr("y", function(d) { return y(country); })
+      	.attr("height", y.bandwidth())
+      	.attr("width", function(d) {
+        	return Math.abs(x(countryTotal[country]) - x(0))
+      	})
+      	.style("fill", function(d) {
+        	return colour(countryTotal[country])
+      	});
+
+      var labels = svg.append("g")
+      	.attr("class", "labels");
+
+      labels.selectAll("text")
+      	.data(data)
+        .enter().append("text")
+      	.attr("class", "bar-label")
+      	.attr("x", x(0))
+      	.attr("y", function(d) { return y(country)})
+      	.attr("dx", function(d) {
+        	return countryTotal[country] < 0 ? cfg.labelMargin : -cfg.labelMargin;
+      	})
+      	.attr("dy", y.bandwidth())
+      	.attr("text-anchor", function(d) {
+        	return countryTotal[country] < 0 ? "start" : "end";
+      	})
+      	.text(function(d) { return country })
+      	.style("fill", function(d) {
+        	 if (country == "European Union") {
+             return "blue";
+           }
+      	});
+      }
+
+  </script>
 </body>
-</html>

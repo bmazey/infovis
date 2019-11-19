@@ -59,21 +59,26 @@
 				rates.sort((a,b) => a-b);
 
 				// step 1: change color_domain to quartiles
-				var A = 0;  
-				var B = 2;  
-				var C = 4; 
-				var D = 8;  
-				var E = 30; 
+				// switching to use rates (which is already sorted)
+				var A = d3.quantile(rates, 0);
+				var B = d3.quantile(rates, 0.25);
+				var C = d3.quantile(rates, 0.5);
+				var D = d3.quantile(rates, 0.75);
+				var E = d3.quantile(rates, 1);
+
 				var color_domain = [A, B, C, D, E];
+
 				// Define labels shown for legend. Display the value to 2 decimal places.
 				var color_domain_labels = color_domain.map(d => d.toFixed(2))
 				var color_range = ['#ffffcc', '#a1dab4', '#41b6c4', '#2c7fb8', '#253494'];
 				var colorScale = d3.scaleLinear()
 					.domain(color_domain)
 					.range(color_range);
-				// step 2: create opacity scale
-				var opacityScale;
 
+				// step 2: create opacity scale
+				var opacityScale= d3.scaleLinear()
+					.domain(color_domain)
+					.range(d3.range(0.2, 1, (1-0.2)/5))
 
 				svg.append("g")
 					.attr("class", "county")
@@ -82,9 +87,9 @@
 					.enter().append("path")
 					.attr("d", path)
 					// step 3: change color opacity according to unemployment rate
-					.attr('opacity', .5)
+					.attr('opacity', d => opacityScale(pairRateWithId[d.id]))
 					// step 4: change color hue according to unemployment rate
-					.attr ( "fill" , '#66c2a4');
+					.attr ( "fill" , d => colorScale(pairRateWithId[d.id]));
 
 
 				// add legend
@@ -123,7 +128,7 @@
 					.attr("width", ls_w)
 					.attr("height", ls_h)
 					// step 5: set the linear gradient color pattern for the legend. Follow the instructions in the README.
-					.attr("fill", '#66c2a4');
+					.attr("fill", (d, i) => "url(#linear-gradient-" + i + ")");
 
 
 				var legend_title = "Unemployment Rate in %";

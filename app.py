@@ -27,7 +27,7 @@ def categories():
 
 
 @app.route('/assignment')
-def categories():
+def assignment():
     return render_template('assignment.html')
 
 

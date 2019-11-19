@@ -26,5 +26,10 @@ def categories():
     return render_template('aid-type-bars.html')
 
 
+@app.route('/assignment')
+def categories():
+    return render_template('assignment.html')
+
+
 if __name__ == '__main__':
     app.run()

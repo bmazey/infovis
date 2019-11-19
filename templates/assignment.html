@@ -41,8 +41,8 @@
 			var path = d3.geoPath()
 				.projection(projection);
 
-			queue().defer(d3.json, "us.json")
-				.defer(d3.csv, "data-VDNaC.csv")
+			queue().defer(d3.json, "{{ url_for('static', filename = 'us.json') }}")
+				.defer(d3.csv, "{{ url_for('static', filename = 'data-VDNaC.csv') }}")
 				.await(ready);
 
 			function ready(error, us, data) {

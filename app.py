@@ -36,5 +36,10 @@ def project_2_viz_1_donated():
     return render_template('project-2-viz-1-donor.html')
 
 
+@app.route('/project-2-viz-1-received')
+def project_2_viz_1_received():
+    return render_template('project-2-viz-1-recipients.html')
+
+
 if __name__ == '__main__':
     app.run()

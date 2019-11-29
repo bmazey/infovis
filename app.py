@@ -41,5 +41,10 @@ def project_2_viz_1_received():
     return render_template('project-2-viz-1-recipients.html')
 
 
+@app.route('/project-2-viz-2')
+def project_2_viz_2():
+    return render_template('project-2-viz-2.html')
+
+
 if __name__ == '__main__':
     app.run()

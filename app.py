@@ -31,5 +31,10 @@ def assignment():
     return render_template('assignment.html')
 
 
+@app.route('/project-2-viz-1-donated')
+def project_2_viz_1_donated():
+    return render_template('project-2-viz-1-donor.html')
+
+
 if __name__ == '__main__':
     app.run()

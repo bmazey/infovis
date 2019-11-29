@@ -10,6 +10,16 @@
 <div class="chart-wrapper" id="chart-line1"></div>
 
 <script type="text/javascript">
+
+    /*
+		Brandon Mazey
+		bjm319@nyu.edu
+		N15793294
+		Mini Project 2
+		11/29/2019
+		https://github.com/bmazey/infovis
+	*/
+
     d3.csv('{{ url_for('static', filename = 'received.csv') }}', function(error, data) {
     data.forEach(function (d) {
         d.year = +d.year;

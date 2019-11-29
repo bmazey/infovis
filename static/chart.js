@@ -1,12 +1,11 @@
 function makeLineChart(dataset, xName, yObjs, axisLables) {
     var chartObj = {};
 
-    // these colors suck
-    // var color = d3.scale.category10();
+    var color = d3.scale.category20();
 
-    var color = d3.scale.ordinal()
-        .domain(["Austrailia", "Canada", "Denmark", "France", "Italy", "Japan", "Sweden", "United Kingdom", "United States"])
-        .range(['#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6'])
+    // var color = d3.scale.ordinal()
+        // .domain(["Austrailia", "Canada", "Denmark", "France", "Italy", "Japan", "Sweden", "United Kingdom", "United States"])
+        // .range(['#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6'])
 
     chartObj.xAxisLable = axisLables.xAxis;
     chartObj.yAxisLable = axisLables.yAxis;

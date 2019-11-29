@@ -20,28 +20,71 @@
 		https://github.com/bmazey/infovis
 	*/
 
+    <!-- Australia,Austria,Belgium,Brazil,Canada,Chile,Colombia,Cyprus,Czech Republic,Denmark,Estonia,Finland,France,Germany,Greece,Hungary,Iceland,India,Ireland,Italy,Japan,Korea,Kuwait,Latvia,Liechtenstein,Lithuania,Luxembourg,New Zealand,Norway,Poland,Portugal,Qatar,Romania,Saudi Arabia,Slovak Republic,Slovenia,South Africa,Spain,Sweden,Switzerland,Taiwan,Thailand,United Arab Emirates,United Kingdom,United States -->
     d3.csv('{{ url_for('static', filename = 'received.csv') }}', function(error, data) {
     data.forEach(function (d) {
         d.year = +d.year;
         d.Australia = +d.Australia;
+        d.Austria = +d.Austria;
+        d.Belgium = +d.Belgium;
+        d.Brazil = +d.Brazil;
         d.Canada = +d.Canada;
+        d.Chile = +d.Chile;
+        d.Columbia = +d.Columbia;
+        d.Cyprus = +d.Cyprus;
+        d.CzechRepublic = +d.CzechRepublic;
         d.Denmark = +d.Denmark;
+        d.Estonia = +d.Estonia;
+        d.Finland = +d.Finland;
         d.France = +d.France;
+        d.Germany = +d.Germany;
+        d.Greece = +d.Greece;
+        d.Hungary = +d.Hungary;
+        d.Iceland = +d.Iceland;
+        d.India = +d.India;
+        d.Ireland = +d.Ireland;
         d.Italy = +d.Italy;
         d.Japan = +d.Japan;
+        d.Korea = +d.Korea;
+        d.Kuwait = +d.Kuwait;
+        d.Latvia = +d.Latvia;
+        d.Liechtenstein = +d.Liechtenstein;
+        d.Lithuania = +d.Lithuania;
+        d.Luxembourg = +d.Luxembourg;
+        d.NewZealand = +d.NewZealand;
+        d.Norway = +d.Norway;
+        d.Poland = +d.Poland;
+        d.Portugal = +d.Portugal;
+        d.Romania = +d.Romania;
+        d.Spain = +d.Spain;
         d.Sweden = +d.Sweden;
-        d.UnitedKingdom = +d.UnitedKingdom
-        d.UnitedStates = +d.UnitedStates
+        d.SaudiArabia = +d.SaudiArabia;
+        d.SouthAfrica = +d.SouthAfrica;
+        d.Thailand = +d.Thailand;
+        d.UnitedKingdom = +d.UnitedKingdom;
+        d.UnitedStates = +d.UnitedStates;
     });
 
+    <!-- Australia,Austria,Belgium,Brazil,Canada,Chile,Colombia,Cyprus,Czech Republic,Denmark,Estonia,Finland,France,Germany,Greece,Hungary,Iceland,India,Ireland,Italy,Japan,Korea,Kuwait,Latvia,Liechtenstein,Lithuania,Luxembourg,New Zealand,Norway,Poland,Portugal,Qatar,Romania,Saudi Arabia,Slovak Republic,Slovenia,South Africa,Spain,Sweden,Switzerland,Taiwan,Thailand,United Arab Emirates,United Kingdom,United States -->
     var chart = makeLineChart(data, 'year', {
-        'Australia': {column: 'Australia'},
+        'Brazil': {column: 'Brazil'},
         'Canada': {column: 'Canada'},
-        'Denmark': {column: 'Denmark'},
+        'Chile': {column: 'Chile'},
+        'Colombia': {column: 'Columbia'},
+        'Czech Republic': {column: 'Czech Republic'},
         'France': {column: 'France'},
+        'Germany': {column: 'Germany'},
         'Italy': {column: 'Italy'},
+        'India': {column: 'India'},
         'Japan': {column: 'Japan'},
+        'Norway': {column: 'Norway'},
+        'Poland': {column: 'Poland'},
+        'Romania': {column: 'Romania'},
         'Sweden': {column: 'Sweden'},
+        'Saudi Arabia': {column: 'Saudi Arabia'},
+        'South Africa': {column: 'South Africa'},
+        'Spain': {column: 'Spain'},
+        'Thailand': {column: 'Thailand'},
         'United Kingdom': {column: 'United Kingdom'},
         'United States': {column: 'United States'},
     }, {xAxis: 'Year', yAxis: 'Amount'});

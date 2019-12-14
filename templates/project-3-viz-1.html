@@ -5,7 +5,7 @@
 <!-- d3.js -->
 <script src="https://d3js.org/d3.v4.js"></script>
 
-<div id="my_dataviz"></div>
+<div id="viz"></div>
 
 <!-- colors & legends -->
 <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
@@ -13,7 +13,7 @@
 
 
 <style>
-  .my_dataviz {
+  .viz {
     overflow: scroll;
   }
 </style>
@@ -25,7 +25,7 @@
       height = 950 - margin.top - margin.bottom;
 
     // append svg
-    var svg = d3.select("#my_dataviz")
+    var svg = d3.select("#viz")
     .append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
@@ -94,7 +94,7 @@
         .call(legendLinear);
 
       // create an interactive tooltip
-      var tooltip = d3.select("#my_dataviz")
+      var tooltip = d3.select("#viz")
         .append("div")
         .style("position", "absolute")
         .style("opacity", 0)

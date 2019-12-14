@@ -46,5 +46,10 @@ def project_2_viz_2():
     return render_template('project-2-viz-2.html')
 
 
+@app.route('/project-3-viz-1')
+def project_3_viz_1():
+    return render_template('project-3-viz-1.html')
+
+
 if __name__ == '__main__':
     app.run()

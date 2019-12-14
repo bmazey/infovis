@@ -33,6 +33,17 @@
 <footer>
 
 <script lang='babel' type='text/babel'>
+
+    /*
+	Brandon Mazey
+	bjm319@nyu.edu
+	N15793294
+	D3 Lab - Project 3
+	12/14/2019
+	https://github.com/bmazey/infovis
+	*/
+
+
 d3.json('{{ url_for('static', filename = 'purposes.json') }}', createAdjacencyMatrix);
 function createAdjacencyMatrix(data) {
     const adjacencyMatrix = d3.adjacencyMatrixLayout();

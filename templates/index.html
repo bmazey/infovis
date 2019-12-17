@@ -48,8 +48,8 @@
 		
     </style>
 	
-	 <script src="{{ url_for('static', filename = 'd3.js') }}"></script> <!-- Add this line to your file -->
-    <!-- <script src="d3.js"></script> -->
+	 <!-- <script src="{{ url_for('static', filename = 'd3.js') }}"></script> <!-- Add this line to your file -->
+    <script src="d3.js"></script>
 	
 </head>
 
@@ -75,8 +75,8 @@
 	function loadData() {
 	    // TODO 1: Add the code to load the CSV file named "routes.csv" | 1 Line
 		return Promise.all([
-            d3.csv("{{ url_for('static', filename = 'routes.csv') }}"),
-            d3.json("{{ url_for('static', filename = 'countries.geo.json') }}"),
+            d3.csv("routes.csv"),
+            d3.json("countries.geo.json") }}"),
         ]).then(datasets => {
             store.routes = datasets[0];
             store.geoJSON = datasets[1]
